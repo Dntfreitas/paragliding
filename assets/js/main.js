@@ -254,7 +254,7 @@
                     });
 
             // EXIF data
-            $image_img[0].addEventListener("load", function() {
+            $image_img[0].addEventListener("load", function () {
                 EXIF.getData($image_img[0], function () {
                     exifDatas[$image_img.data('name')] = getExifDataMarkup(this);
                 });
@@ -313,10 +313,18 @@
             var template = '';
             for (var current in exif) {
                 var current_data = exif[current];
-                var exif_data = EXIF.getTag(img, current_data['tag']);
-                if (typeof exif_data !== "undefined") {
-                    template += '<i class="fa fa-' + current_data['icon'] + '" aria-hidden="true"></i> ' + exif_data + '&nbsp;&nbsp;';
+                if (current_data['tag'] !== 'GPSLatitude' && current_data['tag'] !== 'GPSLongitude') {
+                    var exif_data = EXIF.getTag(img, current_data['tag']);
+                    if (typeof exif_data !== "undefined") {
+                        template += '<i class="fa fa-' + current_data['icon'] + '" aria-hidden="true"></i> ' + exif_data + '&nbsp;&nbsp;';
+                    }
                 }
+            }
+            var latitude = EXIF.getTag(img, 'GPSLatitude');
+            var longitude = EXIF.getTag(img, 'GPSLongitude');
+            if (typeof latitude !== "undefined" && typeof longitude !== "undefined") {
+                template += '<i class="fa fa-globe" aria-hidden="true"></i> Lat.: ' + latitude + '&nbsp;&nbsp;';
+                template += 'Lon.: ' + longitude + '&nbsp;&nbsp;';
             }
             return template;
         }
